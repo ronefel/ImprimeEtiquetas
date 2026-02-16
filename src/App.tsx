@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import ConfigPanel from './components/ConfigPanel';
-import ContentPanel from './components/ContentPanel';
+import TextToolsPanel from './components/TextToolsPanel';
 import Preview from './components/Preview';
 import ModelsModal from './components/ModelsModal';
-import { defaultConfig, type LabelConfig } from './types';
+import { defaultConfig, type LabelConfig, type LabelData } from './types';
 
 function App() {
   const [config, setConfig] = useState<LabelConfig>(defaultConfig);
-  const [activeTab, setActiveTab] = useState<'config' | 'content'>('config');
-  const [labelContents, setLabelContents] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<'config' | 'text'>('config');
+  // State for label data arrays
+  const [labelContents, setLabelContents] = useState<LabelData[]>([]);
   const [selectedLabelIndex, setSelectedLabelIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -20,7 +21,7 @@ function App() {
       const newContents = [...prev];
       if (newContents.length < total) {
         for (let i = prev.length; i < total; i++) {
-          newContents.push('');
+          newContents.push({ content: '', verticalAlign: 'center' }); // Default center
         }
       } else {
         newContents.length = total;
@@ -36,30 +37,47 @@ function App() {
     }));
   };
 
-  const handleApplyAll = (text: string) => {
-    setLabelContents(new Array(config.rows * config.cols).fill(text));
+  const handleApplyAll = (data: LabelData) => {
+    setLabelContents(new Array(config.rows * config.cols).fill({ ...data }));
   };
 
-  const handleUpdateLabel = (index: number, text: string) => {
+  const handleUpdateLabel = (index: number, content: string) => {
     setLabelContents(prev => {
       const newContents = [...prev];
-      newContents[index] = text;
+      newContents[index] = { ...newContents[index], content };
       return newContents;
     });
   };
 
+  const handleUpdateAlignment = (index: number, verticalAlign: 'top' | 'center' | 'bottom') => {
+      setLabelContents(prev => {
+          const newContents = [...prev];
+          newContents[index] = { ...newContents[index], verticalAlign };
+          return newContents;
+      });
+  };
+
   const handleSelectLabel = (index: number) => {
     setSelectedLabelIndex(index);
-    setActiveTab('content');
+    setActiveTab('text');
   };
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleLoadModel = (newConfig: LabelConfig, newContents: string[]) => {
-    setConfig(newConfig);
-    setLabelContents(newContents);
+  const handleLoadModel = (newConfig: LabelConfig, newContents: LabelData[] | string[]) => {
+      // Compatibility with old save format (string[])
+      let migratedContents: LabelData[];
+      
+      if (newContents.length > 0 && typeof newContents[0] === 'string') {
+          migratedContents = (newContents as string[]).map(c => ({ content: c, verticalAlign: 'center' }));
+      } else {
+          migratedContents = newContents as LabelData[];
+      }
+      
+      setConfig(newConfig);
+      setLabelContents(migratedContents);
   };
 
   return (
@@ -92,10 +110,10 @@ function App() {
               Layout
             </button>
             <button
-              className={`flex-1 py-3 text-sm font-medium ${activeTab === 'content' ? 'text-indigo-600 border-b-2 border-indigo-600 bg-gray-50' : 'text-gray-500 hover:text-gray-700'}`}
-              onClick={() => setActiveTab('content')}
+              className={`flex-1 py-3 text-sm font-medium ${activeTab === 'text' ? 'text-indigo-600 border-b-2 border-indigo-600 bg-gray-50' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => setActiveTab('text')}
             >
-              Conteúdo
+              Texto
             </button>
           </div>
 
@@ -103,11 +121,10 @@ function App() {
             {activeTab === 'config' ? (
               <ConfigPanel config={config} onChange={handleConfigChange} />
             ) : (
-              <ContentPanel
+              <TextToolsPanel
                 onApplyAll={handleApplyAll}
-                selectedLabelIndex={selectedLabelIndex}
-                onUpdateLabel={handleUpdateLabel}
-                currentLabelText={selectedLabelIndex !== null ? labelContents[selectedLabelIndex] || '' : ''}
+                currentData={selectedLabelIndex !== null ? labelContents[selectedLabelIndex] : undefined}
+                onUpdateAlignment={(align) => selectedLabelIndex !== null && handleUpdateAlignment(selectedLabelIndex, align)}
               />
             )}
           </div>
@@ -119,6 +136,7 @@ function App() {
             contents={labelContents}
             onSelectLabel={handleSelectLabel}
             selectedIndex={selectedLabelIndex}
+            onUpdateContent={handleUpdateLabel}
           />
         </main>
       </div>

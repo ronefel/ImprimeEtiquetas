@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import type { LabelConfig } from '../types';
+import type { LabelConfig, LabelData } from '../types';
 
 interface SavedModel {
     config: LabelConfig;
-    contents: string[];
+    contents: LabelData[] | string[]; // Support legacy string[]
     updatedAt: number;
 }
 
 interface Props {
     isOpen: boolean;
     onClose: () => void;
-    onLoad: (config: LabelConfig, contents: string[]) => void;
+    onLoad: (config: LabelConfig, contents: LabelData[] | string[]) => void;
     currentConfig: LabelConfig;
-    currentContents: string[];
+    currentContents: LabelData[];
 }
 
 const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, currentContents }) => {

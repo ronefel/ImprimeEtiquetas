@@ -13,6 +13,11 @@ export interface LabelConfig {
     cols: number;
 }
 
+export interface LabelData {
+    content: string;
+    verticalAlign: 'top' | 'center' | 'bottom';
+}
+
 export const defaultConfig: LabelConfig = {
     pageWidth: 210,
     pageHeight: 297,

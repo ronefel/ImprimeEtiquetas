@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import type { LabelConfig } from '../types';
+import type { LabelConfig, LabelData } from '../types';
+import RichTextLabel from './RichTextLabel';
 
 interface Props {
     config: LabelConfig;
-    contents: string[];
+    contents: LabelData[];
     onSelectLabel: (index: number) => void;
     selectedIndex: number | null;
+    onUpdateContent: (index: number, content: string) => void;
 }
 
-const Preview: React.FC<Props> = ({ config, contents, onSelectLabel, selectedIndex }) => {
+const Preview: React.FC<Props> = ({ 
+    config, 
+    contents, 
+    onSelectLabel, 
+    selectedIndex,
+    onUpdateContent,
+}) => {
     const [scale, setScale] = useState(1);
     const [isPrint, setIsPrint] = useState(false);
 
@@ -38,9 +46,6 @@ const Preview: React.FC<Props> = ({ config, contents, onSelectLabel, selectedInd
         transformOrigin: 'top left',
         marginBottom: isPrint ? 0 : `-${(1 - effectiveScale) * config.pageHeight}mm`,
         marginRight: isPrint ? 0 : `-${(1 - effectiveScale) * config.pageWidth}mm`,
-        // Print specific overrides handled by React state or CSS class can be tricky.
-        // Ideally we rely on @media print CSS, but inline styles override unless marked !important.
-        // Or we reset transform for print via class.
     };
 
     const gridStyle: React.CSSProperties = {
@@ -51,36 +56,50 @@ const Preview: React.FC<Props> = ({ config, contents, onSelectLabel, selectedInd
         rowGap: `${config.gapVertical}mm`,
     };
 
-    const getLabelStyle = (index: number): React.CSSProperties => ({
+    const getLabelWrapperStyle = (index: number): React.CSSProperties => ({
         width: `${config.labelWidth}mm`,
         height: `${config.labelHeight}mm`,
         border: selectedIndex === index && !isPrint ? '2px solid #4f46e5' : isPrint ? 'none' : '1px dashed #ccc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '12px',
-        overflow: 'hidden',
-        cursor: isPrint ? 'default' : 'pointer',
-        whiteSpace: 'pre-wrap',
-        textAlign: 'center',
+        position: 'relative', 
         backgroundColor: selectedIndex === index && !isPrint ? 'rgba(79, 70, 229, 0.05)' : 'transparent',
-        // In print, we might want to ensure no background unless user set one.
     });
 
     const labels = [];
     const totalLabels = config.rows * config.cols;
 
     for (let i = 0; i < totalLabels; i++) {
+        const data = contents[i] || { content: '', verticalAlign: 'center' };
+        
+        // Mapeamento de 'top' | 'center' | 'bottom' para flex-start, center, flex-end
+        const justifyContentMap = {
+            'top': 'flex-start',
+            'center': 'center',
+            'bottom': 'flex-end',
+        };
+
         labels.push(
             <div
                 key={i}
-                style={getLabelStyle(i)}
+                style={getLabelWrapperStyle(i)}
+                className="print:!border-none"
                 onClick={() => !isPrint && onSelectLabel(i)}
-                className="print:!border-none" // Force no border on print to override inline styles
             >
-                <div className="p-1 w-full h-full break-words">
-                    {contents[i]}
-                </div>
+                <RichTextLabel
+                    htmlContent={data.content}
+                    width={`${config.labelWidth}mm`}
+                    height={`${config.labelHeight}mm`}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column', 
+                        justifyContent: justifyContentMap[data.verticalAlign] || 'center',
+                    }}
+                    isSelected={selectedIndex === i}
+                    onSelect={() => onSelectLabel(i)}
+                    onChange={(html) => onUpdateContent(i, html)}
+                    isPrint={isPrint}
+                />
             </div>
         );
     }
