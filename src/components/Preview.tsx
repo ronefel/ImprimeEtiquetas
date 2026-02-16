@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Preview: React.FC<Props> = ({ config, contents, onSelectLabel, selectedIndex }) => {
-    const [scale, setScale] = useState(0.8);
+    const [scale, setScale] = useState(1);
     const [isPrint, setIsPrint] = useState(false);
 
     useEffect(() => {
@@ -76,7 +76,7 @@ const Preview: React.FC<Props> = ({ config, contents, onSelectLabel, selectedInd
                 key={i}
                 style={getLabelStyle(i)}
                 onClick={() => !isPrint && onSelectLabel(i)}
-                className="print:border-none" // Tailwind utility for print if needed
+                className="print:!border-none" // Force no border on print to override inline styles
             >
                 <div className="p-1 w-full h-full break-words">
                     {contents[i]}
@@ -94,7 +94,7 @@ const Preview: React.FC<Props> = ({ config, contents, onSelectLabel, selectedInd
                 <button onClick={() => setScale(s => Math.min(2, s + 0.1))} className="px-2 py-1 bg-gray-200 rounded">+</button>
             </div>
 
-            <div style={pageStyle} className="print:transform-none print:shadow-none print:m-0">
+            <div style={pageStyle} className="print:!transform-none print:!shadow-none print:!m-0">
                 <div style={gridStyle}>
                     {labels}
                 </div>

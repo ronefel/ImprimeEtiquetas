@@ -12,7 +12,7 @@ const ConfigPanel: React.FC<InternalProps> = ({ config, onChange }) => {
     };
 
     return (
-        <div className="bg-gray-50 p-4 rounded-lg border h-full overflow-y-auto">
+        <div className="bg-gray-50 p-4 h-full overflow-y-auto">
             <h2 className="text-lg font-semibold mb-4 border-b pb-2">Configuração da Página</h2>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
