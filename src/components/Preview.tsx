@@ -94,6 +94,7 @@ const Preview: React.FC<Props> = ({
                         display: 'flex',
                         flexDirection: 'column', 
                         justifyContent: justifyContentMap[data.verticalAlign] || 'center',
+                        textAlign: 'center',
                     }}
                     isSelected={selectedIndex === i}
                     onSelect={() => onSelectLabel(i)}
@@ -105,7 +106,7 @@ const Preview: React.FC<Props> = ({
     }
 
     return (
-        <div className="w-full h-full overflow-auto bg-gray-200 p-8 flex justify-center items-start print:p-0 print:bg-white print:overflow-visible print:block">
+        <div className="w-full h-full overflow-y-scroll overflow-x-hidden bg-gray-200 p-8 flex justify-center items-start print:p-0 print:bg-white print:overflow-visible print:block">
             {/* Controls for Scale (Screen only) */}
             <div className="fixed bottom-4 right-4 bg-white p-2 rounded shadow flex gap-2 print:hidden z-50">
                 <button onClick={() => setScale(s => Math.max(0.2, s - 0.1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
