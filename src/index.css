@@ -35,7 +35,7 @@ body {
   }
 
   body {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    color: #000 !important;
+    background: transparent !important;
   }
 }

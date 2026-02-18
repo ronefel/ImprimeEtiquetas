@@ -35,7 +35,7 @@ const RichTextLabel = ({
                 outline: 'none',
                 overflow: 'hidden',
             }}
-            className={`w-full h-full p-1 break-words ${!isPrint ? 'cursor-text' : ''}`}
+            className={`w-full h-full p-1 break-words ${!isPrint ? 'cursor-text' : ''} print:!text-black`}
             contentEditable={!isPrint}
             onInput={handleInput}
             onFocus={handleFocus}

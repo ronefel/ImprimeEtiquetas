@@ -64,7 +64,7 @@ const Preview = ({
             <div
                 key={i}
                 style={getLabelWrapperStyle(i)}
-                className="print:!border-none"
+                className="print:!border-none print:!bg-transparent"
                 onClick={() => !isPrint && onSelectLabel(i)}
             >
                 <RichTextLabel
