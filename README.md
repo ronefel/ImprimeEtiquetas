@@ -1,73 +1,45 @@
-# React + TypeScript + Vite
+# ImprimeEtiquetas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O **ImprimeEtiquetas** é uma aplicação desktop desenvolvida com Electron e React para facilitar o processo de criação, personalização e impressão de etiquetas.
 
-Currently, two official plugins are available:
+## 🚀 Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Configuração de Layout Flexível**: Defina o número de linhas e colunas conforme a sua necessidade.
+- **Edição de Texto Rica**: Painel de ferramentas para ajustar tamanho da fonte, alinhamento (vertical e horizontal) e estilo.
+- **Visualização em Tempo Real**: Veja exatamente como suas etiquetas serão impressas.
+- **Modelos de Etiquetas**: Salve e carregue modelos configurados para agilizar o trabalho repetitivo.
+- **Impressão Direta**: Integração com as funções de impressão do sistema.
 
-## React Compiler
+## 🛠️ Tecnologias Utilizadas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: [React](https://reactjs.org/) + [Vite](https://vitejs.dev/)
+- **Desktop Shell**: [Electron](https://www.electronjs.org/)
+- **Estilização**: [Tailwind CSS](https://tailwindcss.com/)
+- **Gerenciamento de Estado**: Hooks do React (`useState`, `useEffect`)
 
-## Expanding the ESLint configuration
+## 📦 Instalação e Execução
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Pré-requisitos
+- [Node.js](https://nodejs.org/) (recomendado versão LTS)
+- npm ou yarn
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Passos
+1. No diretório raiz, instale as dependências:
+   ```bash
+   npm install
+   ```
+2. Para rodar em modo desenvolvimento (Vite + Electron):
+   ```bash
+   npm run dev
+   ```
+3. Para gerar o build da aplicação:
+   ```bash
+   npm run electron:build
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 📄 Estrutura do Projeto
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- `src/`: Contém o código fonte do frontend React.
+  - `components/`: Componentes da interface (Painéis de configuração, Preview, etc).
+- `electron/`: Contém os arquivos principais do processo Electron (`main.js`, `preload.js`).
+- `public/`: Ativos estáticos.
