@@ -29,6 +29,10 @@ const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, 
     }, [isOpen]);
 
     const fetchModels = async () => {
+        if (!window.ipcRenderer) {
+            console.error('ipcRenderer not available');
+            return;
+        }
         setLoading(true);
         try {
             const data = await window.ipcRenderer.invoke('get-models') as Record<string, SavedModel>;
@@ -42,6 +46,10 @@ const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, 
 
     const handleSave = async () => {
         if (!newModelName.trim()) return;
+        if (!window.ipcRenderer) {
+            alert('Não foi possível salvar: Sistema de arquivos não disponível.');
+            return;
+        }
         const model: SavedModel = {
             config: currentConfig,
             contents: currentContents,
@@ -59,6 +67,7 @@ const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, 
 
     const handleDelete = async (name: string) => {
         if (!confirm(`Tem certeza que deseja excluir o modelo "${name}"?`)) return;
+        if (!window.ipcRenderer) return;
         try {
             await window.ipcRenderer.invoke('delete-model', name);
             await fetchModels();
