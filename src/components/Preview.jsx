@@ -8,7 +8,6 @@ const Preview = ({
     selectedIndex,
     onUpdateContent,
 }) => {
-    const [scale, setScale] = useState(1);
     const [isPrint, setIsPrint] = useState(false);
 
     useEffect(() => {
@@ -20,9 +19,6 @@ const Preview = ({
         return () => mediaQueryList.removeEventListener('change', handlePrintChange);
     }, []);
 
-    // Use scale 1 for print, variable for screen
-    const effectiveScale = isPrint ? 1 : scale;
-
     const pageStyle = {
         position: 'relative',
         width: `${config.pageWidth}mm`,
@@ -33,10 +29,6 @@ const Preview = ({
         paddingLeft: `${config.marginLeft}mm`,
         backgroundColor: 'white',
         boxShadow: isPrint ? 'none' : '0 0 10px rgba(0,0,0,0.1)',
-        transform: isPrint ? 'none' : `scale(${effectiveScale})`,
-        transformOrigin: 'top left',
-        marginBottom: isPrint ? 0 : `-${(1 - effectiveScale) * config.pageHeight}mm`,
-        marginRight: isPrint ? 0 : `-${(1 - effectiveScale) * config.pageWidth}mm`,
     };
 
     const gridStyle = {
@@ -98,13 +90,6 @@ const Preview = ({
 
     return (
         <div className="w-full h-full overflow-y-scroll overflow-x-hidden bg-gray-200 p-8 flex justify-center items-start print:p-0 print:bg-white print:overflow-visible print:block">
-            {/* Controls for Scale (Screen only) */}
-            <div className="fixed bottom-4 right-4 bg-white p-2 rounded shadow flex gap-2 print:hidden z-50">
-                <button onClick={() => setScale(s => Math.max(0.2, s - 0.1))} className="px-2 py-1 bg-gray-200 rounded">-</button>
-                <span className="min-w-[3ch] text-center">{Math.round(effectiveScale * 100)}%</span>
-                <button onClick={() => setScale(s => Math.min(2, s + 0.1))} className="px-2 py-1 bg-gray-200 rounded">+</button>
-            </div>
-
             <div style={pageStyle} className="print:!transform-none print:!shadow-none print:!m-0">
                 <div style={gridStyle}>
                     {labels}
