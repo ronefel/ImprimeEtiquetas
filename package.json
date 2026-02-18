@@ -12,6 +12,22 @@
     "electron:dev": "vite",
     "electron:build": "vite build && electron-builder"
   },
+  "build": {
+    "appId": "com.imprimeetiquetas.app",
+    "productName": "ImprimeEtiquetas",
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    }
+  },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "electron-store": "^11.0.2",
