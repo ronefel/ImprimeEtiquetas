@@ -1,8 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('ipcRenderer', {
-    invoke: (channel: string, ...args: any[]) => ipcRenderer.invoke(channel, ...args),
-    on: (channel: string, listener: (event: any, ...args: any[]) => void) => {
+    invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args),
+    on: (channel, listener) => {
         ipcRenderer.on(channel, listener);
         return () => ipcRenderer.removeListener(channel, listener);
     }

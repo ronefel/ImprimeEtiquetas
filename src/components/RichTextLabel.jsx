@@ -1,18 +1,6 @@
-
 import React, { useRef, useEffect } from 'react';
 
-interface RichTextLabelProps {
-    htmlContent: string;
-    width: string;
-    height: string;
-    style: React.CSSProperties;
-    isSelected: boolean;
-    onSelect: () => void;
-    onChange: (newHtml: string) => void;
-    isPrint: boolean;
-}
-
-const RichTextLabel: React.FC<RichTextLabelProps> = ({
+const RichTextLabel = ({
     htmlContent,
     style,
     isSelected,
@@ -20,12 +8,12 @@ const RichTextLabel: React.FC<RichTextLabelProps> = ({
     onChange,
     isPrint
 }) => {
-    const editorRef = useRef<HTMLDivElement>(null);
+    const editorRef = useRef(null);
 
     // Atualiza o conteúdo apenas quando externo muda drasticamente ou inicialização
     useEffect(() => {
         if (editorRef.current && editorRef.current.innerHTML !== htmlContent) {
-           editorRef.current.innerHTML = htmlContent;
+            editorRef.current.innerHTML = htmlContent;
         }
     }, [htmlContent]);
 

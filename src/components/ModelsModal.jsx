@@ -1,25 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import type { LabelConfig, LabelData } from '../types';
 
-interface SavedModel {
-    config: LabelConfig;
-    contents: LabelData[] | string[]; // Support legacy string[]
-    updatedAt: number;
-}
-
-interface Props {
-    isOpen: boolean;
-    onClose: () => void;
-    onLoad: (config: LabelConfig, contents: LabelData[] | string[]) => void;
-    currentConfig: LabelConfig;
-    currentContents: LabelData[];
-}
-
-const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, currentContents }) => {
-    const [models, setModels] = useState<Record<string, SavedModel>>({});
+const ModelsModal = ({ isOpen, onClose, onLoad, currentConfig, currentContents }) => {
+    const [models, setModels] = useState({});
     const [newModelName, setNewModelName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [view, setView] = useState<'list' | 'save'>('list');
+    const [view, setView] = useState('list');
 
     useEffect(() => {
         if (isOpen) {
@@ -35,7 +20,7 @@ const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, 
         }
         setLoading(true);
         try {
-            const data = await window.ipcRenderer.invoke('get-models') as Record<string, SavedModel>;
+            const data = await window.ipcRenderer.invoke('get-models');
             setModels(data || {});
         } catch (error) {
             console.error(error);
@@ -50,7 +35,7 @@ const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, 
             alert('Não foi possível salvar: Sistema de arquivos não disponível.');
             return;
         }
-        const model: SavedModel = {
+        const model = {
             config: currentConfig,
             contents: currentContents,
             updatedAt: Date.now(),
@@ -65,7 +50,7 @@ const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, 
         }
     };
 
-    const handleDelete = async (name: string) => {
+    const handleDelete = async (name) => {
         if (!confirm(`Tem certeza que deseja excluir o modelo "${name}"?`)) return;
         if (!window.ipcRenderer) return;
         try {
@@ -76,7 +61,7 @@ const ModelsModal: React.FC<Props> = ({ isOpen, onClose, onLoad, currentConfig, 
         }
     };
 
-    const handleLoad = (name: string) => {
+    const handleLoad = (name) => {
         const model = models[name];
         if (model) {
             onLoad(model.config, model.contents);

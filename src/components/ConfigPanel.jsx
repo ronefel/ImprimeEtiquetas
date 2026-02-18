@@ -1,13 +1,7 @@
 import React from 'react';
-import type { LabelConfig } from '../types';
 
-interface InternalProps {
-    config: LabelConfig;
-    onChange: (key: keyof LabelConfig, value: number) => void;
-}
-
-const ConfigPanel: React.FC<InternalProps> = ({ config, onChange }) => {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, key: keyof LabelConfig) => {
+const ConfigPanel = ({ config, onChange }) => {
+    const handleChange = (e, key) => {
         onChange(key, Number(e.target.value));
     };
 
